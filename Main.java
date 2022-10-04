@@ -14,11 +14,11 @@ class Main {
      * System.out.flush();
      */
     System.out.println("Insira o nome do segundo participante:");
-    String name2 = "a";
+    Read.next();
     name = Read.nextLine(); // Read user input
     System.out.println("Insira o número de " + name + ": ");
     choice = Read.nextInt(); // Read user input
-    Player p2 = new Player(false, name2, choice);
+    Player p2 = new Player(false, name, choice);
     System.out.print("\033[H\033[2J");
     System.out.flush();
 
