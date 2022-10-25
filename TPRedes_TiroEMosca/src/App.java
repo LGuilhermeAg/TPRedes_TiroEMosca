@@ -1,18 +1,24 @@
 import java.io.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.IOException;
 
 public class App {
-    public static ArrayList<Integer> intToArray(int num){
-        ArrayList<Integer> shotArray = new ArrayList<>();
+    // Transforma o valor da tentativa em um array para comparação de posições (tiros e moscas)
+    public static ArrayList<Integer> intToArray(ArrayList<Integer> shotArray, int num){
         if(num != 0){
             int temp = num%10;
             num/=10;
-            intToArray(num);
+            intToArray(shotArray, num);
             shotArray.add(temp);
         }
         return shotArray;
     }
+    // Classe de interação com o console para limpar a tela
+    public static void clearConsole() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    }
+
     public static void main(String[] args) throws Exception {
         // Inicialização
         Scanner scan = new Scanner(System.in);
@@ -20,7 +26,6 @@ public class App {
         int palpite=0;
         int tiros;
         int moscas;
-        ArrayList<Integer> shotArray = new ArrayList<>();
         int tries = 0;
         String historico="";                                               // String para armazenar o histórico de tentativas
 
@@ -37,14 +42,24 @@ public class App {
             palpite = scan.nextInt();
 
             System.out.println("Voce digitou:"+palpite);
-            if(palpite == 0) break;
-            System.out.println("O número gerado foi:"+target);              //APAGAAAAR - APENAS DEBUG
+            if(palpite == 0){
+                System.out.println("Você desistiu! O número era "+fullTarget);
+                break;
+            } 
+            System.out.println("O número gerado foi:"+fullTarget);              //APAGAAAAR - APENAS DEBUG
             if(palpite == fullTarget){
+                clearConsole();
                 System.out.println("Parabéns, você acertou os três dígitos!");
+                moscas=3;
                 historico+="\nPalpite "+tries+": "+palpite+" - "+tiros+"T"+moscas+"M";
+                System.out.println(historico);
+                break;
             }else{
-                shotArray = intToArray(palpite);
-                if(shotArray.get(0)==null||shotArray.get(1)==null||shotArray.get(2)==null){
+                ArrayList<Integer> shotArray = new ArrayList<>();
+                shotArray = intToArray(shotArray,palpite);
+                System.out.println("O array gerado foi:"+shotArray);         
+                if(palpite<100 || palpite>999){
+                    clearConsole();
                     System.err.println("Você deve informar um número de 3 dígitos!");
                 }else{
                     for(int i = 0; i < shotArray.size(); i++){
@@ -60,8 +75,9 @@ public class App {
                     }
                 }
                 historico+="\nPalpite "+tries+": "+palpite+" - "+tiros+"T"+moscas+"M";
+                clearConsole();
+                System.out.println(historico);
             }
-            System.out.println(historico);
         }while(palpite!=0||palpite!=fullTarget);
         scan.close();
     }
